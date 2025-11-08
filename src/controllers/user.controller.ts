@@ -5,14 +5,21 @@ import {
   updateUserSchema,
   userIdSchema,
 } from '../utils/validation';
+import { AuthRequest } from '../middleware/auth.middleware';
 
 const userService = new UserService();
 
 export class UserController {
-  async createUser(req: Request, res: Response, next: NextFunction) {
+  async createUser(req: AuthRequest, res: Response, next: NextFunction) {
     try {
+      if (!req.userId) {
+        return res.status(401).json({
+          success: false,
+          error: 'Unauthorized',
+        });
+      }
       const data = createUserSchema.parse(req.body);
-      const user = await userService.createUser(data);
+      const user = await userService.createUser(req.userId, data);
 
       return res.status(201).json({
         success: true,

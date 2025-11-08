@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth.service';
 import { loginSchema } from '../utils/validation';
 import { config } from '../config/env.config';
-import { AuthRequest } from '../middleware/auth.middleware';
 
 const authService = new AuthService();
 
@@ -29,28 +28,6 @@ export class AuthController {
             email: result.user?.email,
           },
         },
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async logout(req: AuthRequest, res: Response, next: NextFunction) {
-    try {
-      const token = req.headers.authorization?.substring(7);
-
-      if (!token) {
-        return res.status(400).json({
-          success: false,
-          error: 'Token not provided',
-        });
-      }
-
-      const result = await authService.logout(token);
-
-      return res.status(200).json({
-        success: true,
-        data: result,
       });
     } catch (error) {
       next(error);

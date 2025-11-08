@@ -5,11 +5,11 @@ import { AppError } from '../middleware/error.middleware';
 import { CreateUserInput, UpdateUserInput } from '../utils/validation';
 
 export class UserService {
-  async createUser(data: CreateUserInput) {
+  async createUser(userId: string, data: CreateUserInput) {
     const [existing] = await db
       .select()
       .from(users)
-      .where(eq(users.email, data.email));
+      .where(eq(users.email, data.email) || eq(users.id, userId));
 
     if (existing) {
       throw new AppError(409, 'User with this email already exists');
@@ -18,6 +18,7 @@ export class UserService {
     const [user] = await db
       .insert(users)
       .values({
+        id: userId,
         ...data,
       })
       .returning();
