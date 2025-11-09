@@ -27,8 +27,8 @@ export const createSwaggerDocument = () => {
     },
     servers: [
       {
-        url: `http://localhost:${config.port}`,
-        description: 'Development server',
+        url: `/`,
+        description: 'Current host',
       },
     ],
     tags: [
